@@ -121,7 +121,7 @@ class PremiumAccount extends BankAccount implements InterestBearing {
   final double _interestRate = 0.5;
 
   PremiumAccount(
-    super._accountNumber, // Fixed: Correct order
+    super._accountNumber,
     super._accountHolderName,
     super._balance,
   );
@@ -153,7 +153,6 @@ class PremiumAccount extends BankAccount implements InterestBearing {
   }
 }
 
-// Added: StudentAccount class (not in your original code)
 class StudentAccount extends BankAccount {
   final double _maxBalance = 5000;
 
@@ -207,7 +206,6 @@ class Bank {
   }
 
   void transferMoney(String fromAccNo, String toAccNo, double amount) {
-    // Fixed: Typo
     BankAccount? fromAcc = findAccount(fromAccNo);
     BankAccount? toAcc = findAccount(toAccNo);
 
@@ -228,12 +226,10 @@ class Bank {
     }
   }
 
-  // Added: Apply monthly interest to all interest-bearing accounts
   void applyMonthlyInterest() {
     for (var acc in _accounts) {
       if (acc is InterestBearing) {
-        double interest = (acc as InterestBearing)
-            .calculateInterest(); // Fixed: Added cast
+        double interest = (acc as InterestBearing).calculateInterest();
         acc.deposit(interest);
         print(
           "Applied interest of \$${interest.toStringAsFixed(2)} to ${acc.getAccountHolderName}'s account.",
@@ -246,7 +242,6 @@ class Bank {
 void main() {
   Bank bank = Bank();
 
-  // Create accounts
   SavingsAccount savingsAccount = SavingsAccount("SA123", "John", 1000);
   CheckingAccount checkingAccount = CheckingAccount("CA123", "Alexa", 500);
   PremiumAccount premiumAccount = PremiumAccount("PA123", "Jack", 15000);
@@ -259,49 +254,40 @@ void main() {
 
   print("=== Testing Each Account Type ===");
 
-  // SavingsAccount: Success (deposit) and Error (withdrawal limit)
   print("\n--- SavingsAccount ---");
   print("Success Test: Deposit");
-  savingsAccount.deposit(200); // Should succeed: 1000 + 200 = 1200
+  savingsAccount.deposit(200);
   print("Error Test: Withdrawal limit");
-  savingsAccount.withdraw(100); // 1st: Succeed
-  savingsAccount.withdraw(100); // 2nd: Succeed
-  savingsAccount.withdraw(100); // 3rd: Succeed
-  savingsAccount.withdraw(100); // 4th: Fail (limit exceeded)
+  savingsAccount.withdraw(100);
+  savingsAccount.withdraw(100);
+  savingsAccount.withdraw(100);
+  savingsAccount.withdraw(100);
 
-  // CheckingAccount: Success (withdrawal) and Error (overdraft)
   print("\n--- CheckingAccount ---");
   print("Success Test: Withdrawal");
-  checkingAccount.withdraw(200); // Should succeed: 500 - 200 = 300
+  checkingAccount.withdraw(200);
   print("Error Test: Overdraft");
-  checkingAccount.withdraw(400); // Should overdraft: 300 - 400 - 35 = -135
+  checkingAccount.withdraw(400);
 
-  // PremiumAccount: Success (deposit) and Error (min balance withdrawal)
   print("\n--- PremiumAccount ---");
   print("Success Test: Deposit");
-  premiumAccount.deposit(1000); // Should succeed: 15000 + 1000 = 16000
+  premiumAccount.deposit(1000);
   print("Error Test: Min balance withdrawal");
-  premiumAccount.withdraw(
-    10000,
-  ); // Should fail: 16000 - 6000 = 10000, but if it drops below 10000, fail
+  premiumAccount.withdraw(10000);
 
-  // StudentAccount: Success (deposit) and Error (max balance)
   print("\n--- StudentAccount ---");
   print("Success Test: Deposit");
-  studentAccount.deposit(1000); // Should succeed: 2000 + 1000 = 3000
+  studentAccount.deposit(1000);
   print("Error Test: Max balance");
-  studentAccount.deposit(3000); // Should fail: 3000 + 3000 = 6000 > 5000
+  studentAccount.deposit(3000);
 
   print("\n=== Testing Bank Features ===");
-  // Transfer: Success
   print("Success Test: Transfer");
-  bank.transferMoney("PA123", "ST123", 1000); // Should succeed
+  bank.transferMoney("PA123", "ST123", 1000);
 
-  // Interest Application
   print("Interest Application");
-  bank.applyMonthlyInterest(); // Applies to Savings and Premium
+  bank.applyMonthlyInterest();
 
-  // Account Finding and Display
   print("Account Finding");
   var found = bank.findAccount("SA123");
   if (found != null) print("Found: ${found.displayAccountInfo()}");
